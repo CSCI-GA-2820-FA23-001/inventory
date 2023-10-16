@@ -145,7 +145,7 @@ class Inventory(db.Model):
     def find(cls, by_id):
         """Finds a Product by it's ID"""
         logger.info("Processing lookup for id %s ...", by_id)
-        return cls.query.get(by_id)
+        return db.session.get(cls, by_id)
 
     @classmethod
     def find_by_name(cls, name):

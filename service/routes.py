@@ -30,6 +30,9 @@ def index():
 
 
 # Place your REST API code here ...
+
+
+# Create a new item in the inventory
 @app.route("/inventory", methods=["POST"])
 def create_product():
     """
@@ -52,6 +55,7 @@ def create_product():
     # return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
 
+# Retrieve an item from the inventory with a specified ID
 @app.route("/inventory/<iid>", methods=["GET"])
 def get_product(iid):
     """Gets a product with specified id"""
@@ -64,6 +68,7 @@ def get_product(iid):
     return jsonify(message), status.HTTP_200_OK
 
 
+# Update a product in the inventory with a specified ID
 @app.route("/inventory/<iid>", methods=["PUT"])
 def update_product(iid):
     """
@@ -86,6 +91,7 @@ def update_product(iid):
     return jsonify(product.serialize()), status.HTTP_200_OK
 
 
+# Error handling for POST method
 @app.route("/inventory/<iid>", methods=["POST"])
 def post_on_id(iid):
     """Handle invalid method: POST on inventory/<iid>"""
@@ -93,6 +99,32 @@ def post_on_id(iid):
         status.HTTP_405_METHOD_NOT_ALLOWED,
         f"Path not allowed, use /inventory to create product {iid}",
     )
+
+
+# Delete a product in the inventory with a specified ID
+@app.route("/inventory/<iid>", methods=["DELETE"])
+def delete_product(iid):
+    """Delete product based on its id"""
+    app.logger.info("Request to delete product with id: %s", iid)
+
+    product = Inventory.find(iid)
+    if not product:
+        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{iid}' was not found.")
+
+    product.delete()
+
+    app.logger.info("Product with ID [%s] deleted.", iid)
+    return jsonify({}), status.HTTP_204_NO_CONTENT
+
+
+# Retrieve all items in the inventory
+@app.route("/inventory", methods=["GET"])
+def list_products():
+    """Retrieves all products from the inventory"""
+    app.logger.info("Request to list all products")
+    products = Inventory.all()
+    results = [product.serialize() for product in products]
+    return jsonify(results), status.HTTP_200_OK
 
 
 ######################################################################

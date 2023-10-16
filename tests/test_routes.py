@@ -251,3 +251,38 @@ class TestYourResourceServer(TestCase):
             f"{BASE_URL}/{post_product.id}", json=post_product.serialize()
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_product(self):
+        """Delete a product"""
+        test_product = ProductFactory()
+        test_product.create()
+        id = test_product.id
+
+        self.assertIsNotNone(Inventory.find(id))
+        resp = self.client.delete(f"{BASE_URL}/{id}", content_type="application/json")
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertIsNone(Inventory.find(id))
+
+    def test_delete_nonexistent_product(self):
+        """Delete a product that doesn't exist"""
+        resp = self.client.delete(f"{BASE_URL}/999999", content_type="application/json")
+
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_list_products_empty(self):
+        """Get products when empty"""
+        resp = self.client.get(BASE_URL)
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 0)
+
+    def test_list_products_with_data(self):
+        """Get products with some data in the database"""
+        self._create_products(5)
+
+        resp = self.client.get(BASE_URL)
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
