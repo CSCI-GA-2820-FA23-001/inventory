@@ -408,3 +408,10 @@ class TestYourResourceServer(TestCase):
         data = response.get_json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(data), 0)
+
+    def test_health(self):
+        """It should Get the health endpoint"""
+        resp = self.app.get("/health")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(data["status"], "OK")
