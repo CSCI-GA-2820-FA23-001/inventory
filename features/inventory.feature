@@ -10,6 +10,7 @@ Background:
         | 321   | phone    | 32      | 50            | 11           | OPEN_BOX| 2020-08-13       |  2020-08-15       |
         | 712   | table    | 43      | 100           | 3            | USED    | 2021-04-01       |  2021-04-05       |
         | 322   | pen      | 12      | 12            | 1            | USED    | 2018-06-04       |  2018-12-02       |
+        | 127   | monitor  | 25      | 10            | 5            | NEW     | 2017-01-01       |  2023-01-01       |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -96,10 +97,15 @@ Scenario: Update a Product
 
 Scenario: Delete a Product
     When I visit the "Home Page"
-    And I set the "Name" to "kitty"
+    And I set the "id" to "127"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "kitty" in the "Name" field
-    And I should see "cat" in the "Category" field
+    And I should see "monitor" in the "name" field
+    And I should see "25" in the "quantity" field
+    And I should see "10" in the "restock_level" field
+    And I should see "5" in the "restock_count" field
+    And I should see "NEW" in the "condition" field
+    And I should see "2017-01-01" in the "condition" field
+    And I should see "2023-01-01" in the "last_restock_date" field
     When I press the "Delete" button
-    Then I should see the message "Pet has been Deleted!"
+    Then I should see the message "Product has been Deleted!"
