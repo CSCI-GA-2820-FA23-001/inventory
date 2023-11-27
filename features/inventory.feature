@@ -65,15 +65,15 @@ Scenario: Read a product
     And I should see "NEW" in the "condition" field
     
 
-Scenario: Search for available
+Scenario: Search for condition
     When I visit the "Home Page"
-    And I select "True" in the "Available" dropdown
+    And I select "USED" in the "condition" dropdown
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "fido" in the results
-    And I should see "kitty" in the results
-    And I should see "sammy" in the results
-    And I should not see "leo" in the results
+    And I should see "table" in the results
+    And I should see "pen" in the results
+    And I should not see "NEW" in the results
+    And I should not see "OPEN_BOX" in the results
 
 Scenario: Update a Product
     When I visit the "Home Page"
